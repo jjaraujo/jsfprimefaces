@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" template="_template.xhtml">
+	<ui:define name="conteudo">
+
+		<h2 align="center">Cadastro de Item</h2>
+		<h:form id="formItemCadastro">
+			<p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" style="border: none; max-width:300px;" >
+				<p:panel   style="border: none">
+					<div class="ui-g-10">
+						<h:outputText value="Valor" for="valor" />
+						<p:inputText  id="valor" value="#{itemMBean.item.valor}"
+							required="true" title="Valor do Item" placeholder="ex: 999,99"
+							requiredMessage="O campo valor é obrigatório!" styleClass="text-right">
+							<f:convertNumber type="number" currencySymbol="R$"
+															locale="pt_BR" pattern="#,##0.00" />
+						</p:inputText>
+					</div>
+				</p:panel>
+				<p:panel style="border: none">
+					<div  class="ui-g-10">
+						<h:outputText value="Descrição" />
+						<p:inputTextarea value="#{itemMBean.item.descricao}" required="true"
+							title="Descrição do Item"
+							requiredMessage="A descrição do item é obrigatória!" />
+					</div>
+				</p:panel>
+				<p:commandButton value="Salvar" action="#{itemMBean.salvarItem}" icon="fa fa-fw fa-check"
+					style="float:right"  process="@form" update="@form :formTableItens">
+				</p:commandButton>
+			</p:panelGrid>
+		</h:form>
+		<br/>
+		<br/>
+		<h:form id="formTableItens">
+			<p:dataTable value="#{itemMBean.itens}" var="item" id="tableItens" rows="5" paginator="true" emptyMessage="Não há itens cadastrados"> 
+				<p:column headerText="ID">
+					<h:outputText value="#{item.id}"/>
+				</p:column>
+				<p:column headerText="Valor">
+					<h:outputText value="#{item.valor}">
+						<f:convertNumber type="currency" currencySymbol="R$"
+																locale="pt_BR" pattern="R$#,##0.00" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Descrição">
+					<h:outputText value="#{item.descricao}"/>
+				</p:column>
+				<p:column headerText="Ações">
+					<p:commandButton value="Excluir" title="Excluir" icon="fa fa-fw fa-remove"  action="#{itemMBean.excluirItem(item)}" process="@form" update="@form formTableItens" />
+					<p:commandButton value="Alterar"  title="Alterar" icon="fa fa-fw fa-edit" action="#{itemMBean.carregaItem(item)}" update=":formItemCadastro"/>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="_template.xhtml">
+	<ui:define name="conteudo">
+		<h2 align="center">Cadastro de Lançamentos</h2>
+		<p:panelGrid style="min-width:500px;min-height:500px;" columns="2"
+			layout="grid" columnClasses="topAligned" styleClass=" foo ui-fluid">
+			<h:form id="formDados">
+				<p:panelGrid id="gridDados"
+					style="max-width:500px;min-height:400px;" columns="2" layout="grid"
+					columnClasses="topAligned" styleClass=" ui-fluid">
+					<p:panel  style="border: none">
+					<div>
+						<p:outputLabel value="Data Inicial" />
+						<p:calendar value="#{cadastrarLancamentoMBean.lancamento.dataInicial}"
+							pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo" mask="true" required="true"/>
+					</div>
+					</p:panel>
+					<p:panel  style="border: none">
+						<div>
+							<p:outputLabel value="Data Final" />
+							<p:calendar value="#{cadastrarLancamentoMBean.lancamento.dataFinal}"
+								pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo" mask="true" required="true"/>
+						</div>
+					</p:panel>
+					<p:panel  style="border: none">
+						<div>
+							<p:outputLabel value="Descrição" />
+							<p:inputTextarea value="#{cadastrarLancamentoMBean.lancamento.observacao}"
+								rows="5" required="true"/>
+						</div>
+					</p:panel>
+					<p:panel  style="border: none">
+						<div>
+							<p:outputLabel value="Item" />
+							<p:autoComplete value="#{cadastrarLancamentoMBean.itemEscolhido}"
+								completeMethod="#{cadastrarLancamentoMBean.findItens}"
+								converter="itemConverter" required="true">
+								<p:ajax event="itemSelect" process="@this"
+									update="@this 
+									 		:formTableItensAdicionados
+									 		valorTotal"
+									listener="#{cadastrarLancamentoMBean.addItemInLancamento()}"/>
+							</p:autoComplete>
+						</div>
+						<div>
+							<br />
+							<p:outputLabel value="Valor total" />
+							<p:inputText id="valorTotal" disabled="true"
+								value="#{cadastrarLancamentoMBean.valorTotal}" />
+						</div>
+					</p:panel>
+					<br />
+					<p:commandButton value="Salvar" action="#{cadastrarLancamentoMBean.salvar}"
+						icon="fa fa-fw fa-check" style="float:right" process="@form"
+						update="@form :formTableItensAdicionados">
+					</p:commandButton>
+				</p:panelGrid>
+			</h:form>
+			<h:form id="formTableItensAdicionados">
+				<p:dataTable id="tableItensAdicionados"
+					value="#{cadastrarLancamentoMBean.lancamento.itens}" var="item"
+					emptyMessage="Nenhum item adicionado">
+					<p:column headerText="ID">
+						<p:outputLabel value="#{item.id}" />
+					</p:column>
+					<p:column headerText="Descrição">
+						<p:outputLabel value="#{item.descricao}" />
+					</p:column>
+					<p:column headerText="Valor">
+						<p:outputLabel value="#{item.valor}">
+						<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" pattern="R$#,##0.00" />
+						</p:outputLabel>
+					</p:column>
+					<p:column headerText="Ação">
+						<p:commandButton value="Excluir" title="Excluir"
+							icon="fa fa-fw fa-remove"
+							action="#{cadastrarLancamentoMBean.removeItem(item)}" process="@form"
+							update="@form :formDados:valorTotal">
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:panelGrid>
+	</ui:define>
+</ui:composition>
