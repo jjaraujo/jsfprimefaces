@@ -30,9 +30,9 @@ public class IntersecaoMBean {
 		Set<Integer> intersecao = new TreeSet<Integer>(conjunto1);
 		intersecao.retainAll(conjunto2);
 		if(!intersecao.isEmpty()) {
-			Messages.addMessage(FacesMessage.SEVERITY_INFO, "Possui interseção!");
+			Messages.addMessage( "Possui interseção!");
 		} else {
-			Messages.addMessage(FacesMessage.SEVERITY_WARN,"Atenção", "Não possui interseção!");
+			Messages.addMessage("Atenção", "Não possui interseção!");
 		}
 	}
 	

@@ -44,7 +44,6 @@ public class ItemMBean {
 			itemRepository.update(item);
 		}
 		item = new ItemEntity(); // limpa o form
-		Messages.addMessage(FacesMessage.SEVERITY_INFO, "Item salvo com sucesso");
 	}
 	
 	public void excluirItem(ItemEntity item) {

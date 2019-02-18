@@ -12,6 +12,9 @@ public class Messages {
 		context.addMessage(null, new FacesMessage(severity, title, msg) );
 	}
 	
+	public static void addMessage( String msg) {
+		 addMessage(FacesMessage.SEVERITY_INFO, "Sucesso", msg);
+	}
 	public static void addMessage(String title, String msg) {
 		 addMessage(FacesMessage.SEVERITY_INFO, title, msg);
 	}
