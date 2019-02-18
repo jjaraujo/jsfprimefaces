@@ -3,18 +3,11 @@ package br.com.joaoaraujo.jsfprimefaces.controller;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-
-import org.jboss.logging.Logger;
-import org.jboss.logging.Logger.Level;
 
 import br.com.joaoaraujo.jsfprimefaces.entity.ItemEntity;
 import br.com.joaoaraujo.jsfprimefaces.repository.ItemRepository;
-import br.com.joaoaraujo.jsfprimefaces.util.Messages;
 
 @ViewScoped
 @ManagedBean
@@ -23,13 +16,10 @@ public class ItemMBean {
 	private ItemRepository itemRepository;
 	private ItemEntity item;
 	private List<ItemEntity> itens;
-	private Logger LOGGER = Logger.getLogger(CadastrarLancamentoMBean.class);
 	
 	@PostConstruct
     public void init(){
 		item = new ItemEntity();
-        LOGGER.log(Level.INFO, "LancamentoMBean kkkk criado");
-        System.out.println("Lancamento MBean criado");
     }
 	
 	public boolean isRenderTableItens() {
@@ -46,9 +36,13 @@ public class ItemMBean {
 		item = new ItemEntity(); // limpa o form
 	}
 	
+	public void limparItem() {
+		item = new ItemEntity();
+	}
+	
 	public void excluirItem(ItemEntity item) {
 		itemRepository = new ItemRepository();
-		itemRepository.delete(item);		
+		itemRepository.delete(item);
 	}
 	public void test() {
 		int i = 0;

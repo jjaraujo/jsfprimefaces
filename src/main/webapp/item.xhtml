@@ -15,9 +15,8 @@
 						<h:outputText value="Valor" for="valor" />
 						<p:inputText  id="valor" value="#{itemMBean.item.valor}"
 							required="true" title="Valor do Item" placeholder="ex: 999,99"
-							requiredMessage="O campo valor é obrigatório!" styleClass="text-right">
-							<f:convertNumber type="number" currencySymbol="R$"
-															locale="pt_BR" pattern="#,##0.00" />
+							requiredMessage="O campo valor é obrigatório!" styleClass="text-right"
+							type="number">
 						</p:inputText>
 					</div>
 				</p:panel>
@@ -29,6 +28,9 @@
 							requiredMessage="A descrição do item é obrigatória!" />
 					</div>
 				</p:panel>
+				<p:commandButton value="Limpar" action="#{itemMBean.limparItem}" icon="fa fa-fw fa-check"
+					style="float:right" update="@form">
+				</p:commandButton>
 				<p:commandButton value="Salvar" action="#{itemMBean.salvarItem}" icon="fa fa-fw fa-check"
 					style="float:right"  process="@form" update="@form :formTableItens">
 				</p:commandButton>
@@ -51,7 +53,16 @@
 					<h:outputText value="#{item.descricao}"/>
 				</p:column>
 				<p:column headerText="Ações">
-					<p:commandButton value="Excluir" title="Excluir" icon="fa fa-fw fa-remove"  action="#{itemMBean.excluirItem(item)}" process="@form" update="@form formTableItens" />
+					<p:commandButton value="Excluir" title="Excluir" icon="fa fa-fw fa-remove"  action="#{itemMBean.excluirItem(item)}" process="@form" update="@form formTableItens formComum:growl" >
+						   <p:confirm header="Confirmation" message="Excluir o item #{item}?" icon="ui-icon-alert" />
+					</p:commandButton>
+					
+				    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+					    <div align="center">
+					        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+					        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+					    </div>
+				    </p:confirmDialog>   
 					<p:commandButton value="Alterar"  title="Alterar" icon="fa fa-fw fa-edit" action="#{itemMBean.carregaItem(item)}" update=":formItemCadastro"/>
 				</p:column>
 			</p:dataTable>

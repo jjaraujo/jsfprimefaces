@@ -7,63 +7,79 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" template="_template.xhtml">
 	<ui:define name="conteudo">
 	<h:form id="formPrincipal">
-	<h:outputText value="Item 10:"/>
-	<p:inputText value="#{visualizarLancamentoMBean.somaValor}"/>
-	 <p:selectBooleanCheckbox value="#{visualizarLancamentoMBean.apenas10Itens}" 
-	 			itemLabel="Apenas 10 lancamentos com mais itens cuja soma é maior que R$50,00 e observação inicia com A (Item 11)">
-            <p:ajax event="change" update=":formPrincipal:tabelaLancamentos" />
-        </p:selectBooleanCheckbox>
-		<p:dataTable id="tabelaLancamentos" value="#{visualizarLancamentoMBean.lancamentos}" var="lancamento" emptyMessage="Não há lançamentos">
-			<f:facet name="header">  
-	            Lançamentos cadastrados  
-	         </f:facet>
-	         <p:column style="width:16px">
-            	<p:rowToggler />
-            </p:column>  
-			<p:column headerText="Data Inicial">
-				<p:outputLabel value="#{lancamento.dataInicial}">
-				<f:convertDateTime pattern="dd/MM/yyyy"
-								timeZone="America/Sao_Paulo" />
-				</p:outputLabel>
-			</p:column>
-			
-			<p:column headerText="Data Final">
-				<p:outputLabel value="#{lancamento.dataFinal}">
+		<h:outputText value="Item 10:"/>
+		<p:inputText value="#{visualizarLancamentoMBean.somaValor}">
+			<f:convertNumber pattern="R$#,##0.00"/>
+		</p:inputText>
+		 <p:selectBooleanCheckbox value="#{visualizarLancamentoMBean.apenas10Itens}" 
+		 			itemLabel="Apenas 10 lancamentos com mais itens cuja soma é maior que R$50,00 e observação inicia com A (Item 11)">
+	            <p:ajax event="change" update=":formPrincipal:tabelaLancamentos" />
+	        </p:selectBooleanCheckbox>
+			<p:dataTable id="tabelaLancamentos" value="#{visualizarLancamentoMBean.lancamentos}" var="lancamento" emptyMessage="Não há lançamentos">
+				<f:facet name="header">  
+		            Lançamentos cadastrados  
+		         </f:facet>
+		         <p:column style="width:16px">
+	            	<p:rowToggler />
+	            </p:column>  
+				<p:column headerText="Data Inicial">
+					<p:outputLabel value="#{lancamento.dataInicial}">
 					<f:convertDateTime pattern="dd/MM/yyyy"
-								timeZone="America/Sao_Paulo" />
-				</p:outputLabel>
-			</p:column>
-			
-			<p:column headerText="Observação">
-				<p:outputLabel value="#{lancamento.observacao}"/>
-			</p:column>
-			
-			<p:column headerText="Valor Total">
-				<p:outputLabel value="#{lancamento.valorTotal}">
-					<f:convertNumber pattern="R$#,##0.00"/>
-				</p:outputLabel>
-			</p:column>
-			
-			<p:rowExpansion>
-	            <p:dataTable  value="#{lancamento.itens}" var="item"  > 
-		            <f:facet name="header">  
-			            Itens 
-			        </f:facet> 
-                   <p:column headerText="ID">    
-                       <h:outputText value="#{item.id}" />  
-                   </p:column>
-                   <p:column headerText="Descrição">  
-                       <h:outputText  value="#{item.descricao}"/>
-                   </p:column>
-                   <p:column headerText="Valor">
-                   		<h:outputText value="#{item.valor}">
-                   			<f:convertNumber pattern="R$#,##0.00"/>
-                   		</h:outputText>
-                   </p:column>
-	            </p:dataTable>
-	           
-	        </p:rowExpansion>
-		</p:dataTable>
+									timeZone="America/Sao_Paulo" />
+					</p:outputLabel>
+				</p:column>
+				
+				<p:column headerText="Data Final">
+					<p:outputLabel value="#{lancamento.dataFinal}">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+									timeZone="America/Sao_Paulo" />
+					</p:outputLabel>
+				</p:column>
+				
+				<p:column headerText="Observação">
+					<p:outputLabel value="#{lancamento.observacao}"/>
+				</p:column>
+				
+				<p:column headerText="Valor Total">
+					<p:outputLabel value="#{lancamento.valorTotal}">
+						<f:convertNumber pattern="R$#,##0.00"/>
+					</p:outputLabel>
+				</p:column>
+				
+				<p:column headerText="Ação">  
+	            	<p:commandButton value="Excluir" title="Excluir" icon="fa fa-fw fa-remove"  
+	            					action="#{visualizarLancamentoMBean.excluirLancamento(lancamento)}" 
+	            					  update=" :formPrincipal">
+						<p:confirm header="Confirmation" message="Excluir o lançamento?" icon="ui-icon-alert" />
+					</p:commandButton>					
+				   <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+				    	<div align="center">
+					        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+					        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+				   		</div>
+				   </p:confirmDialog>   
+	              </p:column>
+	              
+				<p:rowExpansion>
+		            <p:dataTable  value="#{lancamento.itens}" var="item"  > 
+			            <f:facet name="header">  
+				            Itens 
+				        </f:facet> 
+	                   <p:column headerText="ID">    
+	                       <h:outputText value="#{item.id}" />  
+	                   </p:column>
+	                   <p:column headerText="Descrição">  
+	                       <h:outputText  value="#{item.descricao}"/>
+	                   </p:column>
+	                   <p:column headerText="Valor">
+	                   		<h:outputText value="#{item.valor}">
+	                   			<f:convertNumber pattern="R$#,##0.00"/>
+	                   		</h:outputText>
+	                   </p:column>
+		            </p:dataTable>
+		           
+		        </p:rowExpansion>
+			</p:dataTable>
 		</h:form>
 	</ui:define>
 </ui:composition>

@@ -10,8 +10,16 @@ import javax.persistence.criteria.Root;
 
 import br.com.joaoaraujo.jsfprimefaces.entity.ItemEntity;
 
-public class ItemRepository extends EntityCrudService<ItemEntity> {
+public class ItemRepository extends EntityCrudRepository<ItemEntity> {
 	
+	
+	public ItemRepository(boolean manyTransations) {
+		super(manyTransations);
+	}
+	
+	public ItemRepository() {
+		super();
+	}
 	
 	public List<ItemEntity> findByDescricao(String descricao){
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -21,9 +29,8 @@ public class ItemRepository extends EntityCrudService<ItemEntity> {
 		Predicate descricaoLike = criteriaBuilder.like(des, "%".concat(descricao).concat("%"));
 		
 		query.where(descricaoLike);
-	//	query.select(query.from(classType));
 		List<ItemEntity> list = em.createQuery(query).getResultList();
-		em.close();
+		close();
 		return list;
 	}
 

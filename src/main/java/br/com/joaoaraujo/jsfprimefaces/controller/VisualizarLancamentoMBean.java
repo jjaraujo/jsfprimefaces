@@ -14,9 +14,8 @@ import br.com.joaoaraujo.jsfprimefaces.repository.LancamentoRepository;
 @ViewScoped
 public class VisualizarLancamentoMBean {
 
-	private List<LancamentoEntity> lancamentos;
 	private LancamentoRepository lancamentoRepository;
-	private BigDecimal somaValor = BigDecimal.ZERO;
+	private BigDecimal somaValor;
 	private boolean apenas10Itens;
 	
 	@PostConstruct
@@ -34,10 +33,20 @@ public class VisualizarLancamentoMBean {
 	}
 	
 	public BigDecimal getSomaValor() {
+		somaValor = BigDecimal.ZERO;
 		lancamentoRepository = new LancamentoRepository();
 		List<LancamentoEntity> lancamentos = lancamentoRepository.findByMed100();
 		lancamentos.forEach(lancamento -> somaValor = somaValor.add(lancamento.getValorTotal()));
 		return somaValor;
+	}
+	
+	public void setSomaValor(BigDecimal somaValor) {
+		this.somaValor = somaValor;
+	}
+	
+	public void excluirLancamento(LancamentoEntity entity) {
+		lancamentoRepository = new LancamentoRepository();
+		lancamentoRepository.delete(entity);
 	}
 
 	public boolean isApenas10Itens() {

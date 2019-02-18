@@ -46,7 +46,7 @@
 									update="@this 
 									 		:formTableItensAdicionados
 									 		valorTotal"
-									listener="#{cadastrarLancamentoMBean.addItemInLancamento()}"/>
+									listener="#{cadastrarLancamentoMBean.addItemInLancamento}"/>
 							</p:autoComplete>
 						</div>
 						<div>
@@ -59,7 +59,7 @@
 					<br />
 					<p:commandButton value="Salvar" action="#{cadastrarLancamentoMBean.salvar}"
 						icon="fa fa-fw fa-check" style="float:right" process="@form"
-						update="@form :formTableItensAdicionados">
+						update="@form :formTableItensAdicionados formComum:growl">
 					</p:commandButton>
 				</p:panelGrid>
 			</h:form>
@@ -83,8 +83,15 @@
 						<p:commandButton value="Excluir" title="Excluir"
 							icon="fa fa-fw fa-remove"
 							action="#{cadastrarLancamentoMBean.removeItem(item)}" process="@form"
-							update="@form :formDados:valorTotal">
+							update="@form :formDados:valorTotal confirmDialog">
+							<p:confirm header="Confirmation" message="Remover o item #{item}?" icon="ui-icon-alert" />
 						</p:commandButton>
+						<p:confirmDialog id="confirmDialog" global="true" showEffect="fade" hideEffect="fade" >
+						    <div align="center">
+						        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+						    </div>
+					    </p:confirmDialog>   
 					</p:column>
 				</p:dataTable>
 			</h:form>

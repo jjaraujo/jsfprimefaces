@@ -6,7 +6,7 @@ import javax.persistence.Query;
 
 import br.com.joaoaraujo.jsfprimefaces.entity.LancamentoEntity;
 
-public class LancamentoRepository extends EntityCrudService<LancamentoEntity>{
+public class LancamentoRepository extends EntityCrudRepository<LancamentoEntity>{
 		
 		
 		public  List<LancamentoEntity> findByMed100(){

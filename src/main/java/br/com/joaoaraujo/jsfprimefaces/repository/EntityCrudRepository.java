@@ -12,25 +12,40 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import br.com.joaoaraujo.jsfprimefaces.entity.ItemEntity;
+import org.hibernate.exception.ConstraintViolationException;
 
-public class EntityCrudService<T>{
+import br.com.joaoaraujo.jsfprimefaces.util.Messages;
+
+public class EntityCrudRepository<T>{
 
 	EntityManager em;
 	Class<T> classType;
-	Logger LOGGER = Logger.getLogger(EntityCrudService.class.getName());
+	Logger LOGGER = Logger.getLogger(EntityCrudRepository.class.getName());
+	private boolean manyTransations;
 	
 	 @PostConstruct
     public void init(){
         LOGGER.log(null,"EntityManager criado");
         System.out.println("Entity manager criado");
     }
-	 
-	
+
 	@SuppressWarnings("unchecked")
-	public EntityCrudService() {
+	public EntityCrudRepository() {
 		em = new JPAUtil().getEntityManager();
 		classType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		manyTransations = false;
+	}
+	
+	public EntityCrudRepository(boolean manyTransations) {
+		em = new JPAUtil().getEntityManager();
+		classType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		this.manyTransations = manyTransations;
+	}
+	
+	public void close() {
+		if(!manyTransations && em.isOpen()) {
+			em.close();
+		}
 	}
 	
 	public void insert(T entity) {
@@ -42,7 +57,7 @@ public class EntityCrudService<T>{
 			em.getTransaction().rollback();
 			e.printStackTrace();
 		}finally {
-			em.close();
+			close();
 		}
 	}
 	
@@ -57,21 +72,30 @@ public class EntityCrudService<T>{
 			e.printStackTrace();
 			return false;
 		}finally {
-			em.close();
+			close();
 		}
 	}
 	
-	public void delete(T entity) {
+	public boolean delete(T entity) {
 		try {
 			em.getTransaction().begin();
 			entity = em.merge(entity);
 			em.remove(entity);
 			em.getTransaction().commit();
+			return true;
 		}catch (Exception e) {
+			if(e.getCause().getCause().getClass().getSimpleName()
+					.equals(ConstraintViolationException.class
+							.getSimpleName())) {
+				Messages.addErro("Erro", "Não foi possível excluir o objeto");
+				Messages.addMessageDetalhes("O objeto possui referência com outros objetos na base de dados");
+				return false;
+			}
 			em.getTransaction().rollback();
 			e.printStackTrace();
+			return false;
 		}finally {
-			em.close();
+			close();
 		}
 	}
 	
@@ -79,13 +103,12 @@ public class EntityCrudService<T>{
 		CriteriaQuery<T> query = em.getCriteriaBuilder().createQuery(classType);
 		query.select(query.from(classType));
 		List<T> lista = em.createQuery(query).getResultList();
-		em.close();
+		close();
 		return lista;
 	}
 	
 	public T findById(int id) {
 		try {
-			
 			CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 			CriteriaQuery<T> query = criteriaBuilder.createQuery(classType);
 			Root<T> root = query.from(classType);
@@ -95,9 +118,10 @@ public class EntityCrudService<T>{
 			query.where(idEqual);
 			return (T) em.createQuery(query).getSingleResult();
 		}catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}finally {
-			em.close();
+			close();
 		}
 	}
 }

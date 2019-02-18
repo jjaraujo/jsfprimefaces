@@ -3,7 +3,6 @@ package br.com.joaoaraujo.jsfprimefaces.controller;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
@@ -18,7 +17,7 @@ public class IntersecaoMBean {
 	private Integer valor1Int2;
 	private Integer valor2Int2;
 	
-	public void calculaIntersecao() {
+	public boolean calculaIntersecao() {
 		Set<Integer> conjunto1 = new TreeSet<Integer>();
 		Set<Integer> conjunto2 = new TreeSet<Integer>();
 		for(int i = valor1Int1; i <= valor2Int1; i++) {
@@ -31,8 +30,10 @@ public class IntersecaoMBean {
 		intersecao.retainAll(conjunto2);
 		if(!intersecao.isEmpty()) {
 			Messages.addMessage( "Possui interseção!");
+			return true;
 		} else {
 			Messages.addMessage("Atenção", "Não possui interseção!");
+			return false;
 		}
 	}
 	

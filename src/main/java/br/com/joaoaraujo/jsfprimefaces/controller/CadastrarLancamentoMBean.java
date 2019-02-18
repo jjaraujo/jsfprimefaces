@@ -9,42 +9,42 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import org.jboss.logging.Logger;
-import org.jboss.logging.Logger.Level;
-
 import br.com.joaoaraujo.jsfprimefaces.entity.ItemEntity;
 import br.com.joaoaraujo.jsfprimefaces.entity.LancamentoEntity;
 import br.com.joaoaraujo.jsfprimefaces.repository.ItemRepository;
 import br.com.joaoaraujo.jsfprimefaces.repository.LancamentoRepository;
+import br.com.joaoaraujo.jsfprimefaces.util.Messages;
 import br.com.joaoaraujo.jsfprimefaces.util.Util;
 
 @ManagedBean
 @ViewScoped
 public class CadastrarLancamentoMBean {
-	private String msg = ""; 
 	private ItemEntity itemEscolhido;
 	private LancamentoEntity lancamentoEntity;
 	
 	private ItemRepository itemRepository;
 	private LancamentoRepository lancamentoRepository;
 	private BigDecimal total;
-	private Logger LOGGER = Logger.getLogger(CadastrarLancamentoMBean.class);
 	
 
 	@PostConstruct
     public void init(){
 		lancamentoEntity = new LancamentoEntity();
 		lancamentoEntity.setItens(new ArrayList<>());
-        LOGGER.log(Level.INFO, "LancamentoMBean criado");
-        System.out.println("Lancamento MBean criado");
     }
 	
-	public void salvar() {
+	public void salvar()   {
+			if(!isValid()) {
+				return;
+			}
+		
 		lancamentoRepository = new LancamentoRepository();
 		lancamentoEntity.setValorTotal(total);
 		lancamentoRepository.insert(lancamentoEntity);
 		lancamentoEntity = new LancamentoEntity();
 		lancamentoEntity.setItens(new ArrayList<>());
+		itemEscolhido = null;
+		Messages.addMessage("Lançamento salvo com sucesso!");
 	}
 	
 	public List<ItemEntity> findItens(String query){
@@ -64,6 +64,7 @@ public class CadastrarLancamentoMBean {
 	
 	public void removeItem(ItemEntity item) {
 		lancamentoEntity.getItens().remove(item);
+		itemEscolhido = new ItemEntity();
 	}
 	
 	public void addItemInLancamento() {
@@ -96,6 +97,14 @@ public class CadastrarLancamentoMBean {
 
 	public void setLancamentos(LancamentoEntity lancamento) {
 		this.lancamentoEntity = lancamento;
+	}
+	
+	private boolean isValid()   {
+		if(lancamentoEntity.getItens().isEmpty()) {
+			Messages.addWarn("Item Obrigatório", "Por favor, insira um item");
+			return false;
+		}
+		return true;
 	}
  
 }
